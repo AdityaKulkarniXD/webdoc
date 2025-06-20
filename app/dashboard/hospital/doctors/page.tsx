@@ -1,19 +1,31 @@
+"use client"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Users, Search, UserPlus, Phone, Mail, Calendar } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Users, Search, Phone, Mail, Calendar, UserPlus, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { HospitalBreadcrumb } from "@/components/hospital-breadcrumb"
 
-const doctors = [
+const initialDoctors = [
   {
     id: 1,
     name: "Dr. Sarah Johnson",
     specialty: "Cardiology",
     email: "sarah.johnson@hospital.com",
     phone: "+1 (555) 123-4567",
+    password: "password123", // In real app, this would be hashed
     patients: 45,
     status: "Active",
     joinDate: "2020-03-15",
@@ -24,6 +36,7 @@ const doctors = [
     specialty: "Neurology",
     email: "michael.chen@hospital.com",
     phone: "+1 (555) 234-5678",
+    password: "password123",
     patients: 38,
     status: "Active",
     joinDate: "2019-08-22",
@@ -34,6 +47,7 @@ const doctors = [
     specialty: "Pediatrics",
     email: "emily.davis@hospital.com",
     phone: "+1 (555) 345-6789",
+    password: "password123",
     patients: 52,
     status: "On Leave",
     joinDate: "2021-01-10",
@@ -44,6 +58,7 @@ const doctors = [
     specialty: "Orthopedics",
     email: "robert.wilson@hospital.com",
     phone: "+1 (555) 456-7890",
+    password: "password123",
     patients: 41,
     status: "Active",
     joinDate: "2018-11-05",
@@ -54,6 +69,7 @@ const doctors = [
     specialty: "Dermatology",
     email: "lisa.anderson@hospital.com",
     phone: "+1 (555) 567-8901",
+    password: "password123",
     patients: 33,
     status: "Active",
     joinDate: "2022-06-18",
@@ -61,6 +77,34 @@ const doctors = [
 ]
 
 export default function DoctorsPage() {
+  const [doctors, setDoctors] = useState(initialDoctors)
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, doctor: null })
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const handleDeleteClick = (doctor) => {
+    setDeleteDialog({ open: true, doctor })
+  }
+
+  const handleDeleteConfirm = async () => {
+    setIsDeleting(true)
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    // Remove doctor from list
+    setDoctors(doctors.filter((d) => d.id !== deleteDialog.doctor.id))
+
+    setIsDeleting(false)
+    setDeleteDialog({ open: false, doctor: null })
+
+    // Show success message
+    alert(`${deleteDialog.doctor.name} has been successfully deleted.`)
+  }
+
+  const handleDeleteCancel = () => {
+    setDeleteDialog({ open: false, doctor: null })
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -73,7 +117,7 @@ export default function DoctorsPage() {
               <p className="text-xs text-gray-600">Manage all medical staff</p>
             </div>
           </div>
-          <Link href="/dashboard/hospital/doctors/add">
+          <Link href="/dashboard/hospital/add-doctor">
             <Button size="sm" className="text-xs">
               <UserPlus className="h-3 w-3 mr-1" />
               Add Doctor
@@ -158,12 +202,27 @@ export default function DoctorsPage() {
                     <div className="text-lg font-bold text-blue-600">{doctor.patients}</div>
                     <div className="text-xs text-gray-600">Patients</div>
                   </div>
-                  <div className="flex space-x-2">
-                    <Button size="sm" variant="outline" className="text-xs">
-                      View Profile
-                    </Button>
-                    <Button size="sm" className="text-xs">
-                      Edit
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex space-x-1">
+                      <Link href={`/dashboard/hospital/view-doctor/${doctor.id}`}>
+                        <Button size="sm" variant="outline" className="text-xs px-2">
+                          View
+                        </Button>
+                      </Link>
+                      <Link href={`/dashboard/hospital/edit-doctor/${doctor.id}`}>
+                        <Button size="sm" className="text-xs px-2">
+                          Edit
+                        </Button>
+                      </Link>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="text-xs w-full"
+                      onClick={() => handleDeleteClick(doctor)}
+                    >
+                      <Trash2 className="h-3 w-3 mr-1" />
+                      Delete
                     </Button>
                   </div>
                 </div>
@@ -176,19 +235,23 @@ export default function DoctorsPage() {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-lg font-bold text-blue-600">24</div>
+              <div className="text-lg font-bold text-blue-600">{doctors.length}</div>
               <div className="text-xs text-gray-600">Total Doctors</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-lg font-bold text-green-600">22</div>
+              <div className="text-lg font-bold text-green-600">
+                {doctors.filter((d) => d.status === "Active").length}
+              </div>
               <div className="text-xs text-gray-600">Active</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-lg font-bold text-orange-600">2</div>
+              <div className="text-lg font-bold text-orange-600">
+                {doctors.filter((d) => d.status === "On Leave").length}
+              </div>
               <div className="text-xs text-gray-600">On Leave</div>
             </CardContent>
           </Card>
@@ -200,6 +263,27 @@ export default function DoctorsPage() {
           </Card>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialog.open} onOpenChange={handleDeleteCancel}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Doctor</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete <strong>{deleteDialog.doctor?.name}</strong>? This action cannot be undone
+              and will remove all associated data.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleDeleteCancel} disabled={isDeleting}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteConfirm} disabled={isDeleting}>
+              {isDeleting ? "Deleting..." : "Delete Doctor"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

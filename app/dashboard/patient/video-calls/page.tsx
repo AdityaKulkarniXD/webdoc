@@ -176,7 +176,11 @@ export default function VideoCallsPage() {
                   </div>
                 </div>
                 <div className="mt-4 flex gap-2">
-                  <Button size="sm" className="bg-teal-600 hover:bg-teal-700">
+                  <Button
+                    size="sm"
+                    className="bg-teal-600 hover:bg-teal-700"
+                    onClick={() => window.open(`/dashboard/patient/video-call/${appointment.id}`, "_blank")}
+                  >
                     <Video className="h-4 w-4 mr-2" />
                     Join Call
                   </Button>
@@ -224,7 +228,11 @@ export default function VideoCallsPage() {
                   </div>
                 </div>
                 <div className="mt-4 flex gap-2">
-                  <Button size="sm" className="bg-red-600 hover:bg-red-700">
+                  <Button
+                    size="sm"
+                    className="bg-red-600 hover:bg-red-700"
+                    onClick={() => window.open(`/dashboard/patient/video-call/${appointment.id}`, "_blank")}
+                  >
                     <Video className="h-4 w-4 mr-2" />
                     Join Now
                   </Button>

@@ -95,6 +95,19 @@ export function PatientSidebar() {
             </div>
           </Link>
 
+          <Link href="/dashboard/patient/reports">
+            <div
+              className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                isActive("/dashboard/patient/reports")
+                  ? "bg-teal-100 text-teal-700"
+                  : "text-gray-700 hover:bg-teal-50 hover:text-teal-700"
+              }`}
+            >
+              <FileText className="mr-3 h-5 w-5 flex-shrink-0" />
+              View Reports
+            </div>
+          </Link>
+
           <Link href="/dashboard/patient/settings">
             <div
               className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${

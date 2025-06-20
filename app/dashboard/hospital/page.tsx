@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Users, UserPlus, Activity, Calendar, Building2, Bell, Settings } from "lucide-react"
+import { Users, Activity, Calendar, Building2, Bell, Settings } from "lucide-react"
 import Link from "next/link"
 import { HospitalBreadcrumb } from "@/components/hospital-breadcrumb"
 
@@ -84,15 +84,7 @@ export default function HospitalDashboard() {
           {/* Doctor Management */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm flex items-center justify-between">
-                Doctor Management
-                <Link href="/dashboard/hospital/doctors/add">
-                  <Button size="sm" className="text-xs">
-                    <UserPlus className="h-3 w-3 mr-1" />
-                    Add Doctor
-                  </Button>
-                </Link>
-              </CardTitle>
+              <CardTitle className="text-sm flex items-center justify-between">Doctor Management</CardTitle>
               <CardDescription className="text-xs">Manage your medical staff</CardDescription>
             </CardHeader>
             <CardContent>
@@ -179,17 +171,7 @@ export default function HospitalDashboard() {
         {/* Quick Actions */}
         <div className="mt-6">
           <h2 className="text-sm font-semibold text-gray-900 mb-3">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Link href="/dashboard/hospital/doctors/add">
-              <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-4 text-center">
-                  <UserPlus className="h-6 w-6 text-blue-600 mx-auto mb-2" />
-                  <h3 className="text-sm font-medium">Add New Doctor</h3>
-                  <p className="text-xs text-gray-600">Register a new medical professional</p>
-                </CardContent>
-              </Card>
-            </Link>
-
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Link href="/dashboard/hospital/doctors">
               <Card className="hover:shadow-md transition-shadow cursor-pointer">
                 <CardContent className="p-4 text-center">

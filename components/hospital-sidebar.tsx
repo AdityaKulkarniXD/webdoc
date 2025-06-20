@@ -4,13 +4,14 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { LayoutDashboard, Users, Activity, Menu, X, Building2, LogOut } from "lucide-react"
+import { LayoutDashboard, Users, Activity, Menu, X, Building2, LogOut, FileText } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard/hospital", icon: LayoutDashboard },
   { name: "Doctors List", href: "/dashboard/hospital/doctors", icon: Users },
   { name: "Patients", href: "/dashboard/hospital/patients", icon: Activity },
+  { name: "Generate Report", href: "/dashboard/hospital/generate-report", icon: FileText },
 ]
 
 export function HospitalSidebar() {

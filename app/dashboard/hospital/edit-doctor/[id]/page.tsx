@@ -2,15 +2,60 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { UserPlus, ArrowLeft, Eye, EyeOff } from "lucide-react"
+import { UserCheck, ArrowLeft, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { HospitalBreadcrumb } from "@/components/hospital-breadcrumb"
+import { useParams } from "next/navigation"
+
+// Mock data - in real app, this would come from API
+const doctorsData = {
+  "1": {
+    id: 1,
+    name: "Dr. Sarah Johnson",
+    email: "sarah.johnson@hospital.com",
+    phone: "+1 (555) 123-4567",
+    specialization: "cardiology",
+    password: "password123",
+  },
+  "2": {
+    id: 2,
+    name: "Dr. Michael Chen",
+    email: "michael.chen@hospital.com",
+    phone: "+1 (555) 234-5678",
+    specialization: "neurology",
+    password: "password123",
+  },
+  "3": {
+    id: 3,
+    name: "Dr. Emily Davis",
+    email: "emily.davis@hospital.com",
+    phone: "+1 (555) 345-6789",
+    specialization: "pediatrics",
+    password: "password123",
+  },
+  "4": {
+    id: 4,
+    name: "Dr. Robert Wilson",
+    email: "robert.wilson@hospital.com",
+    phone: "+1 (555) 456-7890",
+    specialization: "orthopedics",
+    password: "password123",
+  },
+  "5": {
+    id: 5,
+    name: "Dr. Lisa Anderson",
+    email: "lisa.anderson@hospital.com",
+    phone: "+1 (555) 567-8901",
+    specialization: "dermatology",
+    password: "password123",
+  },
+}
 
 interface FormData {
   name: string
@@ -28,7 +73,10 @@ interface FormErrors {
   phone?: string
 }
 
-export default function AddDoctorPage() {
+export default function EditDoctorPage() {
+  const params = useParams()
+  const doctorId = params.id as string
+
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -40,18 +88,39 @@ export default function AddDoctorPage() {
   const [errors, setErrors] = useState<FormErrors>({})
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Simulate loading doctor data
+    const loadDoctorData = async () => {
+      setLoading(true)
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      const doctor = doctorsData[doctorId as keyof typeof doctorsData]
+      if (doctor) {
+        setFormData({
+          name: doctor.name,
+          email: doctor.email,
+          password: doctor.password,
+          specialization: doctor.specialization,
+          phone: doctor.phone,
+        })
+      }
+      setLoading(false)
+    }
+
+    loadDoctorData()
+  }, [doctorId])
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {}
 
-    // Name validation
     if (!formData.name.trim()) {
       newErrors.name = "Name is required"
     } else if (formData.name.trim().length < 2) {
       newErrors.name = "Name must be at least 2 characters"
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!formData.email.trim()) {
       newErrors.email = "Email is required"
@@ -59,19 +128,16 @@ export default function AddDoctorPage() {
       newErrors.email = "Please enter a valid email address"
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = "Password is required"
     } else if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters"
     }
 
-    // Specialization validation
     if (!formData.specialization) {
       newErrors.specialization = "Specialization is required"
     }
 
-    // Phone validation (Joi.string() equivalent)
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required"
     } else if (!/^\+?[\d\s\-$$$$]+$/.test(formData.phone)) {
@@ -84,7 +150,6 @@ export default function AddDoctorPage() {
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }))
     }
@@ -100,34 +165,27 @@ export default function AddDoctorPage() {
     setIsSubmitting(true)
 
     try {
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // Here you would typically make an API call to add the doctor
-      console.log("Adding doctor:", formData)
-
-      // Reset form on success
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        specialization: "",
-        phone: "",
-      })
-
-      // Show success message (you could add a toast notification here)
-      alert("Doctor added successfully!")
+      console.log("Updating doctor:", formData)
+      alert("Doctor updated successfully!")
     } catch (error) {
-      console.error("Error adding doctor:", error)
-      alert("Failed to add doctor. Please try again.")
+      console.error("Error updating doctor:", error)
+      alert("Failed to update doctor. Please try again.")
     } finally {
       setIsSubmitting(false)
     }
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white border-b shadow-sm">
         <div className="px-4 lg:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center space-x-3 lg:ml-0 ml-12">
@@ -136,16 +194,15 @@ export default function AddDoctorPage() {
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <UserPlus className="h-5 w-5 text-blue-600" />
+            <UserCheck className="h-5 w-5 text-blue-600" />
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">Add New Doctor</h1>
-              <p className="text-xs text-gray-600">Register a new medical professional</p>
+              <h1 className="text-lg font-semibold text-gray-900">Edit Doctor</h1>
+              <p className="text-xs text-gray-600">Update doctor information</p>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Breadcrumb */}
       <HospitalBreadcrumb />
 
       <div className="p-4 lg:p-6">
@@ -153,13 +210,10 @@ export default function AddDoctorPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-sm">Doctor Information</CardTitle>
-              <CardDescription className="text-xs">
-                Please fill in all required information to register a new doctor
-              </CardDescription>
+              <CardDescription className="text-xs">Update the doctor's information below</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Name Field */}
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-xs">
                     Name *
@@ -174,7 +228,6 @@ export default function AddDoctorPage() {
                   {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
                 </div>
 
-                {/* Email Field */}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-xs">
                     Email *
@@ -190,7 +243,6 @@ export default function AddDoctorPage() {
                   {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
                 </div>
 
-                {/* Password Field */}
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-xs">
                     Password *
@@ -221,7 +273,6 @@ export default function AddDoctorPage() {
                   {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
                 </div>
 
-                {/* Specialization Field */}
                 <div className="space-y-2">
                   <Label htmlFor="specialization" className="text-xs">
                     Specialization *
@@ -249,7 +300,6 @@ export default function AddDoctorPage() {
                   {errors.specialization && <p className="text-xs text-red-500">{errors.specialization}</p>}
                 </div>
 
-                {/* Phone Field */}
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="text-xs">
                     Phone *
@@ -265,18 +315,17 @@ export default function AddDoctorPage() {
                   {errors.phone && <p className="text-xs text-red-500">{errors.phone}</p>}
                 </div>
 
-                {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 pt-4">
                   <Button type="submit" className="flex-1 text-xs" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
                         <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-2"></div>
-                        Adding Doctor...
+                        Updating Doctor...
                       </>
                     ) : (
                       <>
-                        <UserPlus className="h-3 w-3 mr-2" />
-                        Add Doctor
+                        <UserCheck className="h-3 w-3 mr-2" />
+                        Update Doctor
                       </>
                     )}
                   </Button>

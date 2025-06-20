@@ -16,6 +16,7 @@ import {
   LogOut,
   Phone,
   ChevronDown,
+  FileText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -23,6 +24,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard/doctor", icon: LayoutDashboard },
   { name: "All Appointments", href: "/dashboard/doctor/appointments", icon: Calendar },
   { name: "Patient Management", href: "/dashboard/doctor/patients", icon: Users },
+  { name: "View Reports", href: "/dashboard/doctor/reports", icon: FileText },
 ]
 
 const currentAppointments = [

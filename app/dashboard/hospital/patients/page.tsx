@@ -1,18 +1,31 @@
+"use client"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Activity, Search, User, Phone, Mail } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Activity, Search, User, Phone, Mail, UserPlus, Trash2 } from "lucide-react"
 import { HospitalBreadcrumb } from "@/components/hospital-breadcrumb"
+import Link from "next/link"
 
-const patients = [
+const initialPatients = [
   {
     id: 1,
     name: "John Smith",
     age: 45,
     email: "john.smith@email.com",
     phone: "+1 (555) 111-2222",
+    address: "123 Main St, New York, NY 10001",
     doctor: "Dr. Sarah Johnson",
     specialty: "Cardiology",
     status: "Active Treatment",
@@ -25,6 +38,7 @@ const patients = [
     age: 32,
     email: "maria.garcia@email.com",
     phone: "+1 (555) 222-3333",
+    address: "456 Oak Ave, Los Angeles, CA 90210",
     doctor: "Dr. Emily Davis",
     specialty: "Pediatrics",
     status: "Follow-up",
@@ -37,6 +51,7 @@ const patients = [
     age: 58,
     email: "robert.johnson@email.com",
     phone: "+1 (555) 333-4444",
+    address: "789 Pine St, Chicago, IL 60601",
     doctor: "Dr. Michael Chen",
     specialty: "Neurology",
     status: "Active Treatment",
@@ -49,6 +64,7 @@ const patients = [
     age: 28,
     email: "emma.wilson@email.com",
     phone: "+1 (555) 444-5555",
+    address: "321 Elm St, Miami, FL 33101",
     doctor: "Dr. Lisa Anderson",
     specialty: "Dermatology",
     status: "Completed",
@@ -61,6 +77,7 @@ const patients = [
     age: 41,
     email: "david.brown@email.com",
     phone: "+1 (555) 555-6666",
+    address: "654 Maple Ave, Seattle, WA 98101",
     doctor: "Dr. Robert Wilson",
     specialty: "Orthopedics",
     status: "Active Treatment",
@@ -70,6 +87,34 @@ const patients = [
 ]
 
 export default function PatientsPage() {
+  const [patients, setPatients] = useState(initialPatients)
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, patient: null })
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const handleDeleteClick = (patient) => {
+    setDeleteDialog({ open: true, patient })
+  }
+
+  const handleDeleteConfirm = async () => {
+    setIsDeleting(true)
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    // Remove patient from list
+    setPatients(patients.filter((p) => p.id !== deleteDialog.patient.id))
+
+    setIsDeleting(false)
+    setDeleteDialog({ open: false, patient: null })
+
+    // Show success message
+    alert(`${deleteDialog.patient.name} has been successfully deleted.`)
+  }
+
+  const handleDeleteCancel = () => {
+    setDeleteDialog({ open: false, patient: null })
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -82,6 +127,12 @@ export default function PatientsPage() {
               <p className="text-xs text-gray-600">View all patients and their treating doctors</p>
             </div>
           </div>
+          <Link href="/dashboard/hospital/add-patient">
+            <Button size="sm" className="text-xs">
+              <UserPlus className="h-3 w-3 mr-1" />
+              Add Patient
+            </Button>
+          </Link>
         </div>
       </header>
 
@@ -192,12 +243,27 @@ export default function PatientsPage() {
                   )}
                 </div>
 
-                <div className="flex space-x-2 pt-2">
-                  <Button size="sm" variant="outline" className="flex-1 text-xs">
-                    View Records
-                  </Button>
-                  <Button size="sm" className="flex-1 text-xs">
-                    Schedule Appointment
+                <div className="flex flex-col space-y-2 pt-2">
+                  <div className="flex space-x-2">
+                    <Link href={`/dashboard/hospital/view-patient/${patient.id}`} className="flex-1">
+                      <Button size="sm" variant="outline" className="w-full text-xs">
+                        View Records
+                      </Button>
+                    </Link>
+                    <Link href={`/dashboard/hospital/edit-patient/${patient.id}`} className="flex-1">
+                      <Button size="sm" className="w-full text-xs">
+                        Edit
+                      </Button>
+                    </Link>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="text-xs w-full"
+                    onClick={() => handleDeleteClick(patient)}
+                  >
+                    <Trash2 className="h-3 w-3 mr-1" />
+                    Delete
                   </Button>
                 </div>
               </CardContent>
@@ -209,30 +275,57 @@ export default function PatientsPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-lg font-bold text-purple-600">1,247</div>
+              <div className="text-lg font-bold text-purple-600">{patients.length}</div>
               <div className="text-xs text-gray-600">Total Patients</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-lg font-bold text-blue-600">892</div>
+              <div className="text-lg font-bold text-blue-600">
+                {patients.filter((p) => p.status === "Active Treatment").length}
+              </div>
               <div className="text-xs text-gray-600">Active Treatment</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-lg font-bold text-green-600">245</div>
+              <div className="text-lg font-bold text-green-600">
+                {patients.filter((p) => p.status === "Follow-up").length}
+              </div>
               <div className="text-xs text-gray-600">Follow-up</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="text-lg font-bold text-gray-600">110</div>
+              <div className="text-lg font-bold text-gray-600">
+                {patients.filter((p) => p.status === "Completed").length}
+              </div>
               <div className="text-xs text-gray-600">Completed</div>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialog.open} onOpenChange={handleDeleteCancel}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Patient</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete <strong>{deleteDialog.patient?.name}</strong>? This action cannot be
+              undone and will remove all medical records and appointment history.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleDeleteCancel} disabled={isDeleting}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteConfirm} disabled={isDeleting}>
+              {isDeleting ? "Deleting..." : "Delete Patient"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

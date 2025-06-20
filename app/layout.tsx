@@ -1,20 +1,21 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type React from "react"
+import type { Metadata } from "next"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Web Doc",
-  description: "generated",
-  generator: "....",
-};
+  title: "MedLynk - Healthcare Platform",
+  description: "Advanced telemedicine platform connecting patients, doctors, and hospitals",
+  generator: "v0.dev",
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
       <body>{children}</body>
     </html>
-  );
+  )
 }

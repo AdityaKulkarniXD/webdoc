@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -155,13 +157,21 @@ export default function DoctorAppointments() {
                         Records
                       </Button>
                       {appointment.type === "Video Call" && appointment.status === "Upcoming" && (
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-xs">
+                        <Button
+                          size="sm"
+                          className="bg-green-600 hover:bg-green-700 text-xs"
+                          onClick={() => window.open(`/dashboard/doctor/video-call/${appointment.id}`, "_blank")}
+                        >
                           <Video className="h-3 w-3 mr-1" />
                           Join Call
                         </Button>
                       )}
                       {appointment.type !== "Video Call" && (
-                        <Button size="sm" className="text-xs">
+                        <Button
+                          size="sm"
+                          className="text-xs"
+                          onClick={() => window.open(`/dashboard/doctor/video-call/${appointment.id}`, "_blank")}
+                        >
                           Start Consultation
                         </Button>
                       )}

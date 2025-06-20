@@ -22,6 +22,10 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 
+export const metadata = {
+  title: "MedLynk - Healthcare Platform",
+}
+
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
@@ -34,7 +38,7 @@ export default function HomePage() {
             </div>
             <div>
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                MediConnect
+                MedLynk
               </span>
               <p className="text-xs text-gray-500 font-medium">Professional Healthcare Platform</p>
             </div>
@@ -423,7 +427,7 @@ export default function HomePage() {
                   <Heart className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <span className="text-2xl font-bold">MediConnect</span>
+                  <span className="text-2xl font-bold">MedLynk</span>
                   <p className="text-sm text-gray-400">Professional Healthcare Platform</p>
                 </div>
               </div>
@@ -479,7 +483,7 @@ export default function HomePage() {
                 </li>
                 <li className="flex items-center text-gray-400 text-sm">
                   <Mail className="h-4 w-4 mr-3" />
-                  support@mediconnect.com
+                  support@medlynk.com
                 </li>
                 <li className="flex items-center text-gray-400 text-sm">
                   <MapPin className="h-4 w-4 mr-3" />
